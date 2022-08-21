@@ -8,7 +8,7 @@ export let accountModalHidden: boolean;
 <style>
 .logo {
   font-family: 'Quicksand', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
 	font-weight: 600;
 }
 

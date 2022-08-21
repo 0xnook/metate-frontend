@@ -47,7 +47,7 @@ onMount(async () => {
 		if ($providerType === 'metamask') {
 			handleMetamaskConnect();
 		} else if ($providerType === 'walletconnect') {
-			handleWalletConnectProvider();
+			/* handleWalletConnectProvider(); */
 		}
 	}
 	hideTimeOutId = await new Promise(r => setTimeout(r, 1000));

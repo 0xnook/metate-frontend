@@ -26,4 +26,4 @@ export const shortSignerAddress = derived([signerAddress],
 		return toShortAddress($signerAddress);
 	});
 
-export const selectedTab = "wrap";
+export const selectedTab = writable("wrap");
