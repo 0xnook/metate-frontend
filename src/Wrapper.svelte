@@ -9,6 +9,17 @@ import Button3D from './Button3D.svelte';
 $: selectedAction = 'wrap';
 
 let input = 0;
+let XOCBalance = utils.parseEther("0");
+let XOCxBalance = utils.parseEther("0");
+
+async function getDisplayData() {
+	XOCBalance = await $contracts.XOC.balanceOf($signerAddress);
+	XOCxBalance = await $contracts.superXOC.balanceOf($signerAddress);
+}
+
+$: if($contracts.XOC && $contracts.superXOC) {
+	getDisplayData();
+}
 
 async function handleApproval() {
 	await $contracts.XOC.approve(superXOCaddress, utils.parseEther(input.toString()));
@@ -30,6 +41,7 @@ async function handleWrap() {
 	margin: 3rem auto 3rem auto;
 	max-width: 40%;
 }
+
 .buttons {
 	display: flex;
 }
@@ -47,7 +59,7 @@ async function handleWrap() {
 .swap-input {
 	margin: auto;
 	margin: 1rem auto 1rem auto;
-	width: 15rem;
+	width: 20rem;
 }
 
 .treedee :global(.pushable) {
@@ -65,13 +77,18 @@ async function handleWrap() {
 		<div>
 			<div class="swap-input">
 				<input bind:value={input} name="top-input" type="number"/>
-				<label for="top-input">{selectedAction === "wrap" ? "XOC" : "XOCx"}</label>
+				<span>
+					<label for="top-input">{selectedAction === "wrap" ? "XOC" : "XOCx"}</label>
+					{selectedAction==="wrap" ? utils.formatEther(XOCBalance.sub(XOCBalance.mod(1e14))) : utils.formatEther(XOCxBalance.sub(XOCxBalance.mod(1e14)))}
+				</span>
 			</div>
 			<div class="swap-input">
 				<input bind:value={input} name="bottom-input" type="number"/>
-				<label for="bottom-input">{selectedAction === "wrap" ? "XOCx" : "XOC"}</label>
+				<span>
+					<label for="bottom-input">{selectedAction === "wrap" ? "XOCx" : "XOC"}</label>
+					{selectedAction==="wrap" ? utils.formatEther(XOCxBalance.sub(XOCxBalance.mod(1e14))) : utils.formatEther(XOCBalance.sub(XOCBalance.mod(1e14)))}
+				</span>
 			</div>
-
 		</div>
 	</div>
 	{#if $contracts.hasOwnProperty("XOC")}
@@ -88,5 +105,8 @@ async function handleWrap() {
 				</div>
 			{/if}
 		{/await}
-	{/if}
+	{:else}
+		<div class="treedee">
+			<Button3D actionHandler={()=>{}}>Cartera desconectada</Button3D>
+		</div> {/if}
 </section>
